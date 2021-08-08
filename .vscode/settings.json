@@ -1,0 +1,7 @@
+{
+    "debug.allowBreakpointsEverywhere": true,
+    "C_Cpp.errorSquiggles": "Disabled",
+    "files.associations": {
+        "*.h": "c"
+    },
+}
