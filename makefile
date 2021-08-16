@@ -63,6 +63,7 @@ $(ARTIFACT):
 	copy "$(VSCODE_ARTIFACT_DIR)\bochsrc.bxrc" bochsrc.bxrc
 	copy "$(VSCODE_ARTIFACT_DIR)\bochsdbg.exe" bochsdbg.exe
 	copy "$(VSCODE_ARTIFACT_DIR)\bochs.exe" bochs.exe
+	copy "$(VSCODE_ARTIFACT_DIR)\bochs-official.exe" bochs-official.exe
 	copy "$(VSCODE_ARTIFACT_DIR)\BIOS-bochs-latest" BIOS-bochs-latest
 	@echo done > $(ARTIFACT)
 
