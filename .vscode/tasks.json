@@ -67,7 +67,7 @@
             "label": "Bochs 远程调试(勿运行)",
             "type": "shell",
             "windows": {
-                "command": "cmd.exe /c echo VSCode安装路径-${execPath} ; echo ''; echo 正在使用makefile文件生成项目 ; echo ''; make; rm -ErrorAction Ignore harddisk.img.lock; cmd.exe /c \"start bochs.exe -q -f bochsrc.bxrc\"",
+                "command": "cmd.exe /c echo VSCode安装路径-${execPath} ; echo ''; echo 正在使用makefile文件生成项目 ; echo ''; make; rm harddisk.img.lock; cmd.exe /c \"start bochs.exe -q -f bochsrc.bxrc\"",
                 "options": {
                     "env": {
                         "PATH": "${execPath}.toolchain\\bin;${env:PATH}",
@@ -90,7 +90,7 @@
             "label": "Bochs 命令调试",
             "type": "shell",
             "windows": {
-                "command": "cmd.exe /c echo VSCode安装路径-${execPath} ; echo ''; echo 正在使用makefile文件生成项目 ; echo ''; make; rm -ErrorAction Ignore harddisk.img.lock; cmd.exe /c \"start bochsdbg.exe -q -f bochsrcdbg.bxrc\"",
+                "command": "cmd.exe /c echo VSCode安装路径-${execPath} ; echo ''; echo 正在使用makefile文件生成项目 ; echo ''; make; rm harddisk.img.lock; cmd.exe /c \"start bochsdbg.exe -q -f bochsrcdbg.bxrc\"",
                 "options": {
                     "env": {
                         "PATH": "${execPath}.toolchain\\bin;${env:PATH}",
@@ -113,7 +113,7 @@
             "label": "Bochs 运行(不调试)",
             "type": "shell",
             "windows": {
-                "command": "cmd.exe /c echo VSCode安装路径-${execPath} ; echo ''; echo 正在使用makefile文件生成项目 ; echo ''; make; rm -ErrorAction Ignore harddisk.img.lock; cmd.exe /c \"start bochs-official.exe -q -f bochsrcdbg.bxrc\"",
+                "command": "cmd.exe /c echo VSCode安装路径-${execPath} ; echo ''; echo 正在使用makefile文件生成项目 ; echo ''; make; rm harddisk.img.lock; cmd.exe /c \"start bochs-official.exe -q -f bochsrcdbg.bxrc\"",
                 "options": {
                     "env": {
                         "PATH": "${execPath}.toolchain\\bin;${env:PATH}",
