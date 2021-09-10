@@ -10,7 +10,12 @@
             "args": [],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
-            "environment": [],
+            "environment": [
+                {
+                    "name": "TEMPLIDENTIFY",
+                    "value": "LinuxKernel"
+                }
+            ],
             "preLaunchTask": "Bochs 远程调试(勿运行)",
             "MIMode": "gdb",
             "miDebuggerPath": "${execPath}.toolchain\\bin\\gdb.exe",
