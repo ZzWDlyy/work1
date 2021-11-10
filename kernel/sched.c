@@ -42,24 +42,41 @@ struct task_state_entry
 	long pid;
 	long new_state;
 	long jiffies;
-	char fun_name[64];
+	int fun_name_index;
 	int line_num;
 };
 
-#define MAX_TASK_TRANS 100		// 直接将此值修改的更大一些，就可以记录更多进程状态变换的轨迹。不要设定的太大，否则会导致绘制轨迹变慢或内存不足。
+char sched_func_dick_table[16][32];
+int  sched_func_count = 0;
+#define MAX_TASK_TRANS 300		// 直接将此值修改的更大一些，就可以记录更多进程状态变换的轨迹。不要设定的太大，否则会导致绘制轨迹变慢或内存不足。
 struct task_state_entry task_trans_table[MAX_TASK_TRANS]; 
 long task_trans_count = 0;
+long real_trans_count = 50;
 
 void record_task_state(long pid, long new_state, long jiffies, const char* fun_name, int line_num)
 {
+	int i = 0, b_in_dick = 0;
 	if(task_trans_count >= MAX_TASK_TRANS)
 		return;
 		
 	task_trans_table[task_trans_count].pid = pid;
 	task_trans_table[task_trans_count].new_state = new_state;
+
 	task_trans_table[task_trans_count].jiffies = jiffies;
-	strcpy(task_trans_table[task_trans_count].fun_name, fun_name);
+
 	task_trans_table[task_trans_count].line_num = line_num;
+
+	for (i = 0; i < sched_func_count; i++) {
+		if (strcmp(sched_func_dick_table[i], fun_name) == 0) {
+			task_trans_table[task_trans_count].fun_name_index = i;
+			b_in_dick = 1;
+			break;
+		}
+	}
+	if (b_in_dick == 0) {
+		strcpy(sched_func_dick_table[sched_func_count++], fun_name);
+		task_trans_table[task_trans_count].fun_name_index = sched_func_count;
+	}
 	
 	task_trans_count++;
 }
@@ -291,6 +308,7 @@ void sleep_on(struct task_struct **p)
 	{
 		RECORD_TASK_STATE(current->pid, TS_WAIT, jiffies);
 	}
+
 	
 	schedule();								// 重新调度。
 	

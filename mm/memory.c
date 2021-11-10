@@ -24,7 +24,7 @@
  * Also corrected some "invalidate()"s - I wasn't doing enough of them.
  */
 /*
- * OK，需求加载是比较容易编写的，而共享页面却需要有点技巧。共享页面程序是
+ * OK，按需加载是比较容易编写的，而共享页面却需要有点技巧。共享页面程序是
  * 02.12.91 开始编写的，好象能够工作 - Linus。
  *
  * 通过执行大约30 个/bin/sh 对共享操作进行了测试：在老内核当中需要占用多于
@@ -54,12 +54,48 @@ struct page_table_entry
 	unsigned long pte;
 };
 
-struct page_table_entry page_table_buffer[1024];
-unsigned long page_entry_count;
 
-void snapshot_page_table(unsigned long* page_table_base)
+unsigned long dir_entry_count; 
+struct page_table_entry dir_table_buffer[64];
+
+unsigned long page_entry_count; 
+struct page_table_entry page_table_buffer[1024];
+unsigned long cur_dir_entry_index = -1;
+
+void vm()
 {
 	unsigned long i, pte;	
+	unsigned long* page_dir_base = 0;
+
+	dir_entry_count = 0;
+	
+	for(i = 0; i < 1024; i++)
+	{
+		pte = page_dir_base[i];
+		
+		/* 跳过无效的 PTE */
+		if(!(pte & 1))
+			continue;
+			
+		dir_table_buffer[dir_entry_count].index = i;
+		dir_table_buffer[dir_entry_count].pte = pte;
+		dir_entry_count++;
+	}	
+}
+
+void vm2(unsigned long subscript)
+{
+	unsigned long i, pte;	
+	unsigned long* page_table_base;
+
+	vm();
+	
+	cur_dir_entry_index = subscript;
+	for (i = 0; i < dir_entry_count; i++) {
+		if (dir_table_buffer[i].index == subscript) {
+			page_table_base = (unsigned long*)(dir_table_buffer[i].pte & 0xFFFFF000);
+		}
+	}
 	
 	page_entry_count = 0;
 	
@@ -92,7 +128,7 @@ struct gdt_entry
 struct gdt_entry gdt_buffer[256];
 unsigned long gdt_entry_count;
 
-void get_gdt_value()
+void showgdt()
 {
 	unsigned long i;
 	
@@ -164,7 +200,7 @@ struct used_page_section_entry used_page_section_table[MAX_SECTION_COUNT];
 unsigned long used_page_section_count;
 unsigned long free_page_count;
 
-void get_mem_map_section()
+void pm()
 {
 	int i;
 	
@@ -240,7 +276,7 @@ unsigned long get_free_page(void)
 	:"=a" (__res)
 	:"0" (0), "i" (LOW_MEM), "c" (PAGING_PAGES), "D" (mem_map+PAGING_PAGES-1)
 	);
-	return __res;							// 返回空闲页面地址（如果无空闲也则返回0）。
+	return __res;							// 返回空闲页面地址（如果无空闲页则返回0）。
 }
 
 /*
