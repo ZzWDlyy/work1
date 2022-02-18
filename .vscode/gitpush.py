@@ -15,6 +15,17 @@ from urllib.parse import urlparse
 if __name__ == "__main__":
 
     print("gitpush.py version: 1.1")
+    strGitconfigPath = ""
+    if platform.system().lower() == 'windows':
+        strGitconfigPath = ".\\.git\\config" 
+    else:
+        strGitconfigPath = "./.git/config"
+    config = configparser.ConfigParser()
+    config.read(strGitconfigPath, encoding='UTF-8')
+    bIncludeuser = config.has_section('user')
+    if not bIncludeuser:
+        os.system('git config user.name 我')
+        os.system('git config user.email me@edu.cn')
 
     execResult = os.system("git config credential.helper \"\" && git add . && git commit -m \"提交作业\"")
 
@@ -28,22 +39,15 @@ if __name__ == "__main__":
     print("请在 VSCode 顶部弹出的命令面板中输入 Git 远程库的用户名和密码。通常为在线课程平台的用户名和密码。")
     print("-------------------------------------------------------------------------------")
 
-    strGitconfigPath = ""
     webURL = ""
     webInfo = ""
     remoteURL = ""
     helpURL = ""
-    if platform.system().lower() == 'windows':
-        strGitconfigPath = ".\\.git\\config" 
-    else:
-        strGitconfigPath = "./.git/config"
+
     gitConfigPath = pathlib.Path(strGitconfigPath)
     
     # 判断是否存在.git/config文件
     if gitConfigPath.exists() and gitConfigPath.is_file():
-        #  实例化configParser对象
-        config = configparser.ConfigParser()
-        config.read(strGitconfigPath, encoding='UTF-8')
         remoteURL = config.get('remote \"origin\"', 'url')
 
         res = urlparse(remoteURL)
@@ -57,7 +61,7 @@ if __name__ == "__main__":
             webURL = remoteURL.replace(".git", "/pipelines")
             webInfo = "正在使用浏览器打开流水线页面，或者点击 " + webURL
     
-    execResult = os.system("git push")
+    execResult = os.system("git push -f")
     if execResult == 0:
         print("\n-------- 提交作业成功！ --------")
         if webURL != "":
@@ -67,4 +71,6 @@ if __name__ == "__main__":
         print("\n--- 提交作业失败! 想解决失败问题？ 使用浏览器访问下面链接即可。 ---")
         print(helpURL)
         exit(execResult)
+
+
     
