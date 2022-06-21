@@ -595,8 +595,23 @@ static void restore_cur(void)
 {
 	gotoxy(saved_x, saved_y);
 }
-
 //// 控制台写函数。
+//将蛇头字符设置在显示内存中由 pos 指定的位置，从而显示在屏幕上
+void snake_move()
+{
+	__asm__("movb _attr,%%ah\n\t"
+			"movw %%ax,%1\n\t"
+			::"a" ('+'),"m" (*(short *)pos)
+			);
+}
+
+//让贪吃蛇停留一定的时间
+void snake_stop() 
+{			
+	int i;
+	for(i = jiffies + 50; jiffies <= i;)
+		;
+}
 // 从终端对应的tty 写缓冲队列中取字符，并显示在屏幕上。
 void con_write(struct tty_struct * tty)
 {
@@ -613,6 +628,42 @@ void con_write(struct tty_struct * tty)
 	// 3：原是状态2；或者原是状态3，并且字符是';'或数字。
 	// 4：原是状态3，并且字符不是';'或数字；
 		GETCH(tty->write_q,c);
+		switch(fflag)
+{
+	case 0:break;
+	case 1: //初始化
+		csi_J(2);	//清屏
+		x = 0; y = 0;
+		gotoxy(x,y);	//将当前光标设置为屏幕左上角的坐标
+		set_cursor();	//将光标移动到屏幕左上角
+	case 5: //向右移动
+		while(fflag == 5 || fflag == 1)
+		{	
+			delete_line();	//删除光标所在的行
+			x < video_num_columns-1 ? x++ : x;	//光标坐标向右移动一位
+			gotoxy(x,y);	//更新光标位置
+			set_cursor();	//设置显示器光标的位置
+			snake_move();	//蛇向右移动
+			snake_stop();	//停留
+		}
+		break;
+	case 3://向下移动
+		while(fflag == 3)
+		{	
+			delete_line();	//删除光标所在的行
+			y < video_num_lines-1 ? y++ : y;	//光标坐标向下移动一位
+			gotoxy(x,y);	//更新光标位置
+			set_cursor();	//设置显示器光标的位置
+			snake_move();	//蛇向下移动
+			snake_stop();	//停留
+		}
+		break;
+}
+if(fflag != 0)
+{
+	continue;
+}
+
 		switch(state) {
 			case 0:
 			// 如果字符不是控制字符(c>31)，并且也不是扩展字符(c<127)，则

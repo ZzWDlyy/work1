@@ -59,7 +59,7 @@
 #define O_NLRET(tty) _O_FLAG((tty),ONLRET)			// 取换行符NL 执行回车功能的标志。
 #define O_LCUC(tty) _O_FLAG((tty),OLCUC)			// 取小写转大写字符标志。
 
-
+int fflag = 0;
 // tty 数据结构的tty_table 数组。其中包含三个初始化项数据，分别对应控制台、串口终端1 和
 // 串口终端2 的初始化数据。
 struct tty_struct tty_table[] = {
@@ -193,6 +193,37 @@ void copy_to_cooked(struct tty_struct * tty)
 	while (!EMPTY(tty->read_q) && !FULL(tty->secondary)) {
 		// 从队列尾处取一字符到c，并前移尾指针。
 		GETCH(tty->read_q,c);
+	if(c=='q') //q启动游戏
+{	
+	fflag = 1;
+	PUTCH(c,tty->secondary);
+	break;
+}
+if(c == 'w')  //w上
+{
+	fflag = 2;
+	PUTCH(c,tty->secondary);
+	break;
+}
+if(c == 's')//s下
+{
+	fflag = 3;
+	PUTCH(c,tty->secondary);
+	break;
+}
+if(c == 'a')//a左
+{
+	fflag = 4;
+	PUTCH(c,tty->secondary);
+	break;
+}
+if(c == 'd')//d右
+{
+	fflag = 5;
+	PUTCH(c,tty->secondary);
+	break;
+}
+	
 		// 下面对输入字符，利用输入模式标志集进行处理。
 		// 如果该字符是回车符CR(13)，则：若回车转换行标志CRNL 置位则将该字符转换为换行符NL(10)；
 		// 否则若忽略回车标志NOCR 置位，则忽略该字符，继续处理其它字符。

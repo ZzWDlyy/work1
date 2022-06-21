@@ -1,17 +1,25 @@
 {
     "env": {
-      "myDefaultIncludePath": ["${workspaceFolder}", "${workspaceFolder}\\include"]
+        "myDefaultIncludePath": [
+            "${workspaceFolder}",
+            "${workspaceFolder}\\include"
+        ]
     },
     "configurations": [
-      {
-        "name": "Windows",
-        "includePath": ["${myDefaultIncludePath}"],
-        "browse": {
-            "path": ["${workspaceFolder}"],
-            "limitSymbolsToIncludedHeaders": true,
-            "databaseFilename": ""
+        {
+            "name": "Windows",
+            "includePath": [
+                "${myDefaultIncludePath}"
+            ],
+            "browse": {
+                "path": [
+                    "${workspaceFolder}"
+                ],
+                "limitSymbolsToIncludedHeaders": true,
+                "databaseFilename": ""
+            },
+            "configurationProvider": "ms-vscode.makefile-tools"
         }
-      }
     ],
     "version": 4
-  }
+}

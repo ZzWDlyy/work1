@@ -1,5 +1,6 @@
 //// 切换到用户模式运行。
 // 该函数利用iret 指令实现从内核模式切换到用户模式（初始任务0）。
+extern int fflag;
 #define move_to_user_mode() \
 __asm__ ("movl %%esp,%%eax\n\t" \
 	"pushl $0x17\n\t" \
